@@ -9,19 +9,26 @@ FIELDS = ["date", "category", "amount", "note"]
 
 def load_expenses():
     """Load expense records from the CSV file."""
-    """Save a new expense to the CSV file."""
-    """Display all recorded expenses."""
-    """Calculate and display spending totals."""
+    if not os.path.exists(FILE) or os.path.getsize(FILE) == 0:
+        return []
+
+    with open(FILE, "r", newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
 
 def add_expense(category, amount, note):
+    """Save a new expense to the CSV file."""
     if amount <= 0:
         raise ValueError("Amount must be positive")
 
     exists = os.path.exists(FILE)
+
     with open(FILE, "a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDS)
+
         if not exists or os.path.getsize(FILE) == 0:
             writer.writeheader()
+
         writer.writerow({
             "date": date.today().isoformat(),
             "category": category,
@@ -31,12 +38,15 @@ def add_expense(category, amount, note):
 
 
 def show_expenses():
+    """Display all recorded expenses."""
     expenses = load_expenses()
+
     if not expenses:
         print("No expenses recorded yet.")
         return
 
     print("\n--- Your Expenses ---")
+
     for item in expenses:
         print(
             f"{item['date']} | {item['category']} | "
@@ -45,6 +55,7 @@ def show_expenses():
 
 
 def show_summary():
+    """Calculate and display spending totals."""
     expenses = load_expenses()
     total = sum(float(e["amount"]) for e in expenses)
     categories = {}
@@ -58,6 +69,7 @@ def show_summary():
     print(f"\nTotal spending: Rs. {total:.2f}")
     print(f"Number of expenses: {len(expenses)}")
     print("\nSpending by category:")
+
     for category, amount in sorted(categories.items()):
         print(f"{category}: Rs. {amount:.2f}")
 
@@ -73,10 +85,14 @@ def main():
         choice = input("Choose an option: ").strip()
 
         if choice == "1":
-            category = input("Category (Food/Travel/Bills/Other): ").strip()
+            category = input(
+                "Category (Food/Travel/Bills/Other): "
+            ).strip()
+
             if not category:
                 print("Category cannot be empty.")
                 continue
+
             try:
                 amount = float(input("Amount in Rs.: "))
                 note = input("Description: ").strip()

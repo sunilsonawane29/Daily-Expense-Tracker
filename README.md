@@ -1,4 +1,3 @@
-
 # Daily Expense Tracker
 
 A beginner-friendly expense tracker built with Python.
@@ -14,3 +13,8 @@ A beginner-friendly expense tracker built with Python.
 - Python
 - CSV
 - Git and GitHub
+
+## How to Run
+1. Install Python.
+2. Open the project folder in a terminal.
+3. Run `python main.py`.
